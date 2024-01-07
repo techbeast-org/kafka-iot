@@ -1,0 +1,5 @@
+venv
+data/kafka01/*
+data/kafka02/*
+data/zoo01/*
+data/zoo02/*
