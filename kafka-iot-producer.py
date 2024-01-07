@@ -5,9 +5,10 @@ import time
 import json
 import random
 
-    
+
+# sensor simulator , integrate your real sensor data here    
 def temperature_simulator():
-    temperature = round(random.uniform(50,70),2)
+    temperature = round(random.uniform(25,35),2)
     return temperature
 
 def publish_to_broker():
