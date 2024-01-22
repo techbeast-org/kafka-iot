@@ -12,16 +12,17 @@ def temperature_simulator():
     return temperature
 
 def publish_to_broker():
-    producer = KafkaProducer(bootstrap_servers=['localhost:9092'],value_serializer=lambda m: json.dumps(m).encode('utf-8'))
+    producer = KafkaProducer(bootstrap_servers=['localhost:9093'],value_serializer=lambda m: json.dumps(m).encode('utf-8'))
     print("connected to broker")
     while True:
         try:
             keys = ["hall","kitchen","bedroom","studyroom"]
             print("sending data to kafka broker")
             for i in keys:
-                payload = {"temperature":temperature_simulator()}
+                payload = json.dumps({"temperature":temperature_simulator()})
                 # print(type(json.dumps(payload).encode('utf-8')))
-                producer.send("iot.telemetry.temperature",payload,key=i.encode())
+                producer.send("sample_topic",payload,key=i.encode())
+                print(payload)
                 time.sleep(5)
         except KafkaError as ke:
             print(ke)
