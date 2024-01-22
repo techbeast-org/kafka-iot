@@ -10,7 +10,7 @@ val host = env("host")
 val driver = "org.postgresql.Driver"
 val mode = "append"
 val sslmode = "require"
-val url = s"jdbc:postgresql://'$host':5432/postgres"
+val url = s"jdbc:postgresql://$host:5432/postgres"
 
 
 val connectionProperties = new Properties()
@@ -51,8 +51,9 @@ val tumblingWindowDF = val_df
       .groupBy(cols: _*)
       .agg(avg("temperature").as("avg_temperature"))
       .withColumn("timestamp",$"window.start")
+      .withColumn("temperature",$"avg_temperature")
       .select("timestamp","Room","avg_temperature").na.drop()
 display(tumblingWindowDF)
-val_df.writeStream.foreachBatch { (batchDF: DataFrame, batchId: Long) =>
+tumblingWindowDF.writeStream.foreachBatch { (batchDF: DataFrame, batchId: Long) =>
   batchDF.write.mode(SaveMode.Append).jdbc(url=url, table="iot_telemetry", connectionProperties=connectionProperties)
 }.start()
